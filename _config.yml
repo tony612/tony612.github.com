@@ -3,9 +3,9 @@
 # ----------------------- #
 
 url: http://Tony612.github.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+title: Echo nil > me
+subtitle: Bleach me and begin again
+author: Tony
 simple_search: http://google.com/search
 description:
 
@@ -19,7 +19,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: h.bing612@gmail.com
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -34,7 +34,7 @@ plugins: plugins
 code_dir: downloads/code
 category_dir: blog/categories
 markdown: rdiscount
-pygments: false # default python pygments have been replaced by pygments.rb
+pygments: true # default python pygments have been replaced by pygments.rb
 
 paginate: 10          # Posts per page on the blog index
 pagination_dir: blog  # Directory base for pagination URLs eg. /blog/page/2/
@@ -58,8 +58,8 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/twitter.ht
 # ----------------------- #
 
 # Github repositories
-github_user:
-github_repo_count: 0
+github_user: Tony612
+github_repo_count: 3
 github_show_profile_link: true
 github_skip_forks: true
 
@@ -72,12 +72,12 @@ twitter_show_follower_count: false
 twitter_tweet_button: true
 
 # Google +1
-google_plus_one: false
+google_plus_one: true
 google_plus_one_size: medium
 
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
-googleplus_user:
+googleplus_user: h.bing612@gmail.com
 googleplus_hidden: false
 
 # Pinboard
@@ -89,7 +89,7 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
+disqus_short_name: masque612
 disqus_show_comment_count: false
 
 # Google Analytics
