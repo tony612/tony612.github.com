@@ -1,0 +1,26 @@
+---
+layout: post
+title: "Hello! "
+date: 2012-09-03 00:39
+comments: true
+categories: 
+---
+
+关于新的博客
+
+早就想搞个技术博客了，之前也写过个RoR的，不过感觉写的不太好，而且又被大作业耽搁了，再加上主机的事，就显得比较麻烦。而这个月又有一些网站，和一些学习的内容，
+最近看到用好多用github来写的，觉得挺棒的，很方便，而且很hack的方法，于是我也来试试咯。等更完善的blog engine写出来，并且搞定主机之后，再用自己的去搭吧，现在
+还是一切从简。
+
+博客的名字也是早就想好的，用shell的一个挺漂亮的echo命令和ruby里的nil来构成，也很hack，哈哈
+
+博客的搭建，参见[octopress](http://octopress.org/)，不知道这个名字是怎么取的，不过和wordpress有点像的感觉，是用来表示博客相关的吧，大概。
+
+基本上按照上边网站的指示来搭建就行，当然也可以选择在heroku或是Rsync(第一次听到这个)。不过也有一些问题,主要是在改动\_config.yml来进行配置后，先push到remote
+那边，结果网页显示不变，看了github上的代码，是有改动的。google之后知道，是因为还要执行`rake setup_github_pages`来进行初始化deploy，再进行`rake deploy`就
+可以了。
+
+最后就是，发现现在换的这个Terminal [Guake](http://guake.org/)对中文的显示感觉挺好的，而且挺漂亮，对vim的color-scheme的显示也会比自带的terminal要好一点，当然也有点不足，比如在vim下
+不能用触摸板像操纵滚动条一样调整光标的上下位置，而且没有直接启动的快捷键。不过整体还好，反应速度也不错。
+
+还有就是，twitter上不去了，用GAE的方法也不行，因为它像Github一样加了ssh吧，倒是安全了一些，哎，还是赶快搞个vps吧。
