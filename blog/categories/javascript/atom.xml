@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascript | Echo nil > me]]></title>
+  <link href="http://Tony612.github.com/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://Tony612.github.com/"/>
+  <updated>2012-09-22T15:24:20+08:00</updated>
+  <id>http://Tony612.github.com/</id>
+  <author>
+    <name><![CDATA[Tony]]></name>
+    <email><![CDATA[h.bing612@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[JS GoodPart: Object]]></title>
+    <link href="http://Tony612.github.com/blog/2012/09/17/js-goodpart-object/"/>
+    <updated>2012-09-17T03:03:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/09/17/js-goodpart-object</id>
+    <content type="html"><![CDATA[<p>javsctipt 简单类型包括数字、字符串、boolean、null和undefined，其余都是对象（<strong>和Ruby不同</strong>）</p>
+
+<p>是可变的键控集合（keyed collections）</p>
+
+<h2>对象字面量</h2>
+
+<p>一个对象字面量就是在一对花括号中的0或多个“键/值”对</p>
+
+<p><strong>对象是属性的容器</strong>，每个属性有<strong>名字和值</strong>，属性名可选择是否用<strong>双引号</strong>括起来</p>
+
+<h2>检索</h2>
+
+<ol>
+<li>【】+字符串</li>
+<li>foo.bar （优先）</li>
+</ol>
+
+
+<p>不存在时返回<strong>undefined</strong></p>
+
+<ul>
+<li>用||来赋默认值</li>
+<li>用&amp;&amp;来避免undefined错误</li>
+</ul>
+
+
+<p><code>
+var middle = stooge["middle-name"] || "(none)";
+var status = flight.status || "unknown";
+flight.equipment // undefined
+flight.equipment.model // throw "TypeError"
+flight.equipment &amp;&amp; flight.equipment.model // undefined
+</code></p>
+
+<h2>赋值</h2>
+
+<h4><strong><em>PS： 如果属性不存在，该属性就被加入对象到属性中去</em></strong></h4>
+
+<h2>引用</h2>
+
+<p>对象通过引用来传递，<strong><em>他们永远不会被拷贝</em></strong></p>
+
+<p><code>
+var x = stooge;
+x.nickname = 'Curly';
+var nick = stooge.nickname;
+// nick is 'Curly' because x and stooge
+// are references to the same object
+var a = {}, b = {}, c = {};
+// a, b, and c each refer to a
+// different empty object
+a = b = c = {};
+// a, b, and c all refer to
+// the same empty object
+</code></p>
+
+<h2>原型（prototype）</h2>
+
+<p>每个对象都链接到一个原型，并从中继承属性，通过字面量创建的原型为<code>Object.prototype</code></p>
+
+<h4>原型链 委托（delegation）</h4>
+
+<p> 只有检索时才会用到。沿原型链寻找，直到到达<code>Object.prototype</code>，否则结果为undefined</p>
+
+<p>这是种动态关系，当添加新属性到原型中，该属性会对此对象可见。</p>
+
+<h2>反射Reflection</h2>
+
+<p>用typeof来得到属性的类型</p>
+
+<p><strong><em>PS：对原型链的属性也会有作用</em></strong></p>
+
+<p>两个方法处理不需要的属性</p>
+
+<ol>
+<li><p>让程序检查并去掉函数的类型，因为一般来说做反射的目标是数据。</p></li>
+<li><p>用<code>hasOwnProperty()</code>方法，不检查原型链的。</p></li>
+</ol>
+
+
+<h2>枚举Enumeration</h2>
+
+<p>用for in来遍历，这会列出所有属性，因此有必要过滤掉不需要的。</p>
+
+<p><code>
+var name;
+for (name in another_stooge) {
+if (typeof another_stooge[name] !== 'function') {
+document.writeln(name + ': ' + another_stooge[name]);
+}
+}
+</code></p>
+
+<p><strong><em>属性名出现的顺序是不确定的！！如果要确保以特定顺序出现，最好的方法就是完全避免使用for in，而是创建一个数组</em></strong></p>
+
+<p><code>
+var i;
+var properties = [
+'first-name',
+'middle-name',
+'last-name',
+'profession'
+];
+for (i = 0; i &lt; properties.length; i += 1) {
+document.writeln(properties[i] + ': ' +
+another_stooge[properties[i]]);
+}
+}
+</code></p>
+
+<h2>删除</h2>
+
+<p>delete可以删除对象中的属性，而不会删除prototype链中的。</p>
+
+<p><strong>PS：删除对象中的属性之后，可能会让原型链中的属性浮现出来</strong></p>
+
+<h2>减少全局变量污染Global Abatement</h2>
+
+<p>javascript可以很随意定义全局变量，<strong>不过它削弱了程序的灵活性，应该避免</strong></p>
+
+<p>最小化使用全局变量的一个方法是在应用中只创建唯一一个全局变量，此变量就变成应用的容器</p>
+
+<p><code>
+var MYAPP = {};
+MYAPP.stooge = {
+"first-name": "Joe",
+"last-name": "Howard"
+};
+MYAPP.flight = {
+airline: "Oceanic",
+number: 815,
+departure: {
+IATA: "SYD",
+time: "2004-09-22 14:55",
+city: "Sydney"
+},
+arrival: {
+IATA: "LAX",
+time: "2004-09-23 10:42",
+city: "Los Angeles"
+}
+};
+</code></p>
+
+<p>可以有效地把多个全局变量整理在一个命名空间下（这里<code>MYAPP</code>就起到命名空间的作用），可以更容易和其他程序整合，也更易读。</p>
+]]></content>
+  </entry>
+  
+</feed>

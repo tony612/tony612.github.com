@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Echo nil > me</title>
+  <title>Installing the archlinux OS - Echo nil > me</title>
   <meta name="author" content="Tony">
 
   
-  <meta name="description" content="今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
-问题是，需要把多个参数转换为一个integer，然后再-1，如下： 1
-foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
+  <meta name="description" content="参考自：老手看这个, 新手教程 这个guides还是很细致的，不过就怕遇到一些莫名的问题就不好了。以及一些不符合自己电脑的东西 虽然在忙个rails的项目，不过还是抽了个空来搞一下一直想玩的arch，也当是从rails里切换出来，放松一下吧。 安装archlinux，版本是2012.09.07（ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://Tony612.github.com/">
+  <link rel="canonical" href="http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,117 +62,12 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/">Using Map Method in a Incredibly Elegant Way</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-22T01:38:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
-问题是，需要把多个参数转换为一个integer，然后再-1，如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>foo1, foo2, too3 ... = foo1.to_i - 1, foo2.to_i - 1, foo3.to_i -1 ...</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果变量一多，就会很麻烦，要重复写好多（我那里是8个，用了三大行才写下），就去ruby-china上求助，然后很快得到回复，然后得到了一种很漂亮的方法</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[foo1, foo2, foo3].map(&:to_i).map(&:pred)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这真算是种一看就亮了的方法吧，<strong>awesome</strong></p>
-
-<h2>map</h2>
-
-<p>map的话，确实因为ruby用的不熟，还没想到去用，而且也没考虑要把他们作为一个数组来对待，这其实就是说明一堆没有规律的数据堆在一起，不管操作还是干嘛都很不方便。
-所以这里用数组组织起来确实是很合适的，当然，这样直接赋值后的话，还并没有改变那几个变量本身，不过还是可以把结果保存在一个数组中来用的。</p>
-
-<h2>&amp;:symbol</h2>
-
-<p>最cool的应该是这个吧，看上去是挺容易看懂，就是把每次迭代器的参数对它自身调用<code>to_i</code>方法，并连续调用map。
-不过详细解释的话，还是去搜了一下,就在<a href="http://stackoverflow.com/questions/1217088/what-does-mapname-mean-in-ruby">stackoverflow的一个问题</a>里看到了相关话题。
-那个被采用的回答里提到</p>
-
-<blockquote><p>It&#8217;s shorthand for tags.map(&amp;:name.to_proc).join(&#8217; &#8216;)</p>
-
-<p>If foo is an object with a to_proc method, then you can pass it to a method as &amp;foo, which will call foo.to_proc and use that as the method&#8217;s block.</p></blockquote>
-
-<p>然后参考这个网站，著名的<a href="http://pragdave.pragprog.com/pragdave/2005/11/symbolto_proc.html">Dave Thomas的网站</a></p>
-
-<blockquote><p>When you say names.map(&amp;xxx), you’re telling Ruby to pass the Proc object in xxx to map as a block.</p>
-
-<p>If xxx isn’t already a Proc object, Ruby tries to coerce it into one by sending it a to_proc message.</p></blockquote>
-
-<p>这段就是说<strong>一个对象<code>bar</code>，如果本身是一个<code>Proc</code>，就把它传到<code>map</code>中，如果有一个<code>to_proc</code>方法，那么就调用<code>bar.to_proc</code>，并把这个转换成的<code>Proc</code>对象传入<code>map</code>中</strong>。</p>
-
-<h2>Symbol and Proc</h2>
-
-<p>去查一下ruby的api关于<a href="http://www.ruby-doc.org/core-1.9.3/Symbol.html#method-i-to_proc">Symbol类的to_proc方法</a>
-就会知道对于一个Symbol的对象，比如这里的<code>:to_i</code>前边加上<code>&amp;</code>，其实就是调用了它的<code>to_proc</code>方法而成为Proc的对象，并传给<code>map</code>这个迭代器。
-<code>Symbol#to_proc</code>的代码像这样：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>def to_proc
-</span><span class='line'>  proc { |obj, *args| obj.send(self, *args) }
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上边的代码中<code>send</code>是<code>Object</code>类中定义的，就像这样<code>send(symbol [, args...]) → obj</code>，其实就是调用了obj的名字叫“symbol”的方法。
-在把上述这个proc对象传到map迭代器之后，每次迭代的数组中的一个值就相当于是<code>to_proc</code>方法中的<code>obj</code>对象，然后就对它调用<code>to_i</code>方法，就可以了。</p>
-
-<h2>Summary</h2>
-
-<p>这应该已经涉及到了元编程的动态调用方法和一些闭包的内容了，真是博大精深啊。
-正如Dave Thomas那篇文章最后说的</p>
-
-<blockquote><p>It’s an incredibly elegant use of coercion and of closures.</p></blockquote>
-
-<p>PS：其实那篇是很久前写的，他提到了<a href="http://extensions.rubyforge.org/rdoc/index.html">Ruby Extensions Project</a>
-不过现在ruby里已经把Symbol的这个方法添加进去了，而那本《Programming ruby》（379页）里也有和这篇博文差不多的一个叙述。
-这本书里又说到了，这种方式可能会造成效率的下降，不过一般的程序，还是可以用的</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/21/installing-the-archlinux-os/">Installing the Archlinux OS</a></h1>
+      <h1 class="entry-title">Installing the Archlinux OS</h1>
     
     
       <p class="meta">
@@ -192,14 +85,14 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 
 <time datetime="2012-09-21T01:43:00+08:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
         
-         | <a href="/blog/2012/09/21/installing-the-archlinux-os/#disqus_thread">Comments</a>
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>参考自：老手看<a href="https://wiki.archlinux.org/index.php/Installation_Guide">这个</a>, <a href="https://wiki.archlinux.org/index.php/Beginners%27_Guide">新手教程</a></p>
+<div class="entry-content"><p>参考自：老手看<a href="https://wiki.archlinux.org/index.php/Installation_Guide">这个</a>, <a href="https://wiki.archlinux.org/index.php/Beginners%27_Guide">新手教程</a></p>
 
 <p>这个guides还是很细致的，不过就怕遇到一些莫名的问题就不好了。以及一些不符合自己电脑的东西</p>
 
@@ -408,252 +301,16 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 
 <p>当然arch是需要去配置很多东西的，这里就先不说了，下次吧。。</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/17/js-goodpart-object/">JS GoodPart: Object</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Tony</span></span>
 
-<time datetime="2012-09-17T03:03:00+08:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/17/js-goodpart-object/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>javsctipt 简单类型包括数字、字符串、boolean、null和undefined，其余都是对象（<strong>和Ruby不同</strong>）</p>
-
-<p>是可变的键控集合（keyed collections）</p>
-
-<h2>对象字面量</h2>
-
-<p>一个对象字面量就是在一对花括号中的0或多个“键/值”对</p>
-
-<p><strong>对象是属性的容器</strong>，每个属性有<strong>名字和值</strong>，属性名可选择是否用<strong>双引号</strong>括起来</p>
-
-<h2>检索</h2>
-
-<ol>
-<li>【】+字符串</li>
-<li>foo.bar （优先）</li>
-</ol>
-
-
-<p>不存在时返回<strong>undefined</strong></p>
-
-<ul>
-<li>用||来赋默认值</li>
-<li>用&amp;&amp;来避免undefined错误</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var middle = stooge["middle-name"] || "(none)";
-</span><span class='line'>var status = flight.status || "unknown";
-</span><span class='line'>flight.equipment // undefined
-</span><span class='line'>flight.equipment.model // throw "TypeError"
-</span><span class='line'>flight.equipment && flight.equipment.model // undefined</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>赋值</h2>
-
-<h4><strong><em>PS： 如果属性不存在，该属性就被加入对象到属性中去</em></strong></h4>
-
-<h2>引用</h2>
-
-<p>对象通过引用来传递，<strong><em>他们永远不会被拷贝</em></strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var x = stooge;
-</span><span class='line'>x.nickname = 'Curly';
-</span><span class='line'>var nick = stooge.nickname;
-</span><span class='line'>// nick is 'Curly' because x and stooge
-</span><span class='line'>// are references to the same object
-</span><span class='line'>var a = {}, b = {}, c = {};
-</span><span class='line'>// a, b, and c each refer to a
-</span><span class='line'>// different empty object
-</span><span class='line'>a = b = c = {};
-</span><span class='line'>// a, b, and c all refer to
-</span><span class='line'>// the same empty object</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>原型（prototype）</h2>
-
-<p>每个对象都链接到一个原型，并从中继承属性，通过字面量创建的原型为<code>Object.prototype</code></p>
-
-<h4>原型链 委托（delegation）</h4>
-
-<p> 只有检索时才会用到。沿原型链寻找，直到到达<code>Object.prototype</code>，否则结果为undefined</p>
-
-<p>这是种动态关系，当添加新属性到原型中，该属性会对此对象可见。</p>
-
-<h2>反射Reflection</h2>
-
-<p>用typeof来得到属性的类型</p>
-
-<p><strong><em>PS：对原型链的属性也会有作用</em></strong></p>
-
-<p>两个方法处理不需要的属性</p>
-
-<ol>
-<li><p>让程序检查并去掉函数的类型，因为一般来说做反射的目标是数据。</p></li>
-<li><p>用<code>hasOwnProperty()</code>方法，不检查原型链的。</p></li>
-</ol>
-
-
-<h2>枚举Enumeration</h2>
-
-<p>用for in来遍历，这会列出所有属性，因此有必要过滤掉不需要的。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var name;
-</span><span class='line'>for (name in another_stooge) {
-</span><span class='line'>if (typeof another_stooge[name] !== 'function') {
-</span><span class='line'>document.writeln(name + ': ' + another_stooge[name]);
-</span><span class='line'>}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong><em>属性名出现的顺序是不确定的！！如果要确保以特定顺序出现，最好的方法就是完全避免使用for in，而是创建一个数组</em></strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var i;
-</span><span class='line'>var properties = [
-</span><span class='line'>'first-name',
-</span><span class='line'>'middle-name',
-</span><span class='line'>'last-name',
-</span><span class='line'>'profession'
-</span><span class='line'>];
-</span><span class='line'>for (i = 0; i &lt; properties.length; i += 1) {
-</span><span class='line'>document.writeln(properties[i] + ': ' +
-</span><span class='line'>another_stooge[properties[i]]);
-</span><span class='line'>}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>删除</h2>
-
-<p>delete可以删除对象中的属性，而不会删除prototype链中的。</p>
-
-<p><strong>PS：删除对象中的属性之后，可能会让原型链中的属性浮现出来</strong></p>
-
-<h2>减少全局变量污染Global Abatement</h2>
-
-<p>javascript可以很随意定义全局变量，<strong>不过它削弱了程序的灵活性，应该避免</strong></p>
-
-<p>最小化使用全局变量的一个方法是在应用中只创建唯一一个全局变量，此变量就变成应用的容器</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var MYAPP = {};
-</span><span class='line'>MYAPP.stooge = {
-</span><span class='line'>"first-name": "Joe",
-</span><span class='line'>"last-name": "Howard"
-</span><span class='line'>};
-</span><span class='line'>MYAPP.flight = {
-</span><span class='line'>airline: "Oceanic",
-</span><span class='line'>number: 815,
-</span><span class='line'>departure: {
-</span><span class='line'>IATA: "SYD",
-</span><span class='line'>time: "2004-09-22 14:55",
-</span><span class='line'>city: "Sydney"
-</span><span class='line'>},
-</span><span class='line'>arrival: {
-</span><span class='line'>IATA: "LAX",
-</span><span class='line'>time: "2004-09-23 10:42",
-</span><span class='line'>city: "Los Angeles"
-</span><span class='line'>}
-</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以有效地把多个全局变量整理在一个命名空间下（这里<code>MYAPP</code>就起到命名空间的作用），可以更容易和其他程序整合，也更易读。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/03/hello/">Hello!</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -665,46 +322,48 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   
 
 
-<time datetime="2012-09-03T00:39:00+08:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/03/hello/#disqus_thread">Comments</a>
-        
-      </p>
+<time datetime="2012-09-21T01:43:00+08:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/archlinux/'>archlinux</a>, <a class='category' href='/blog/categories/install/'>install</a>, <a class='category' href='/blog/categories/linux/'>linux</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>关于新的博客</p>
-
-<p>早就想搞个技术博客了，之前也写过个RoR的，不过感觉写的不太好，而且又被大作业耽搁了，再加上主机的事，就显得比较麻烦。而这个月又有一些网站，和一些学习的内容，
-最近看到用好多用github来写的，觉得挺棒的，很方便，而且很hack的方法，于是我也来试试咯。等更完善的blog engine写出来，并且搞定主机之后，再用自己的去搭吧，现在
-还是一切从简。</p>
-
-<p>博客的名字也是早就想好的，用shell的一个挺漂亮的echo命令和ruby里的nil来构成，也很hack，哈哈</p>
-
-<p>博客的搭建，参见<a href="http://octopress.org/">octopress</a>，不知道这个名字是怎么取的，不过和wordpress有点像的感觉，是用来表示博客相关的吧，大概。</p>
-
-<p>基本上按照上边网站的指示来搭建就行，当然也可以选择在heroku或是Rsync(第一次听到这个)。不过也有一些问题,主要是在改动_config.yml来进行配置后，先push到remote
-那边，结果网页显示不变，看了github上的代码，是有改动的。google之后知道，是因为还要执行<code>rake setup_github_pages</code>来进行初始化deploy，再进行<code>rake deploy</code>就
-可以了。</p>
-
-<p>最后就是，发现现在换的这个Terminal <a href="http://guake.org/">Guake</a>对中文的显示感觉挺好的，而且挺漂亮，对vim的color-scheme的显示也会比自带的terminal要好一点，当然也有点不足，比如在vim下
-不能用触摸板像操纵滚动条一样调整光标的上下位置，而且没有直接启动的快捷键。不过整体还好，反应速度也不错。</p>
-
-<p>还有就是，twitter上不去了，用GAE的方法也不行，因为它像Github一样加了ssh吧，倒是安全了一些，哎，还是赶快搞个vps吧。</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os/" data-via="tony612_han" data-counturl="http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/17/js-goodpart-object/" title="Previous Post: JS GoodPart: Object">&laquo; JS GoodPart: Object</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/" title="Next Post: Using map method in a incredibly elegant way">Using map method in a incredibly elegant way &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -739,7 +398,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/Tony612">@Tony612</a> on GitHub
@@ -769,7 +428,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -798,6 +457,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -812,7 +472,10 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
       var disqus_shortname = 'echonilme';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os/';
+        var disqus_url = 'http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -1,103 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>Echo nil > me</title>
-  <meta name="author" content="Tony">
-
-  
-  <meta name="description" content="今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
-问题是，需要把多个参数转换为一个integer，然后再-1，如下： 1
-foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><![CDATA[Echo nil > me]]></title>
+  <link href="http://Tony612.github.com/atom.xml" rel="self"/>
+  <link href="http://Tony612.github.com/"/>
+  <updated>2012-09-22T15:24:20+08:00</updated>
+  <id>http://Tony612.github.com/</id>
+  <author>
+    <name><![CDATA[Tony]]></name>
+    <email><![CDATA[h.bing612@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-  <link rel="canonical" href="http://Tony612.github.com/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="Echo nil > me" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Echo nil > me</a></h1>
-  
-    <h2>Bleach me and begin again</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:Tony612.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/">Using Map Method in a Incredibly Elegant Way</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-22T01:38:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
+  <entry>
+    <title type="html"><![CDATA[Using map method in a incredibly elegant way]]></title>
+    <link href="http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/"/>
+    <updated>2012-09-22T01:38:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way</id>
+    <content type="html"><![CDATA[<p>今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
 问题是，需要把多个参数转换为一个integer，然后再-1，如下：</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -162,44 +83,15 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 <p>PS：其实那篇是很久前写的，他提到了<a href="http://extensions.rubyforge.org/rdoc/index.html">Ruby Extensions Project</a>
 不过现在ruby里已经把Symbol的这个方法添加进去了，而那本《Programming ruby》（379页）里也有和这篇博文差不多的一个叙述。
 这本书里又说到了，这种方式可能会造成效率的下降，不过一般的程序，还是可以用的</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/21/installing-the-archlinux-os/">Installing the Archlinux OS</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-21T01:43:00+08:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/21/installing-the-archlinux-os/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>参考自：老手看<a href="https://wiki.archlinux.org/index.php/Installation_Guide">这个</a>, <a href="https://wiki.archlinux.org/index.php/Beginners%27_Guide">新手教程</a></p>
+  <entry>
+    <title type="html"><![CDATA[Installing the archlinux OS]]></title>
+    <link href="http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os/"/>
+    <updated>2012-09-21T01:43:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/09/21/installing-the-archlinux-os</id>
+    <content type="html"><![CDATA[<p>参考自：老手看<a href="https://wiki.archlinux.org/index.php/Installation_Guide">这个</a>, <a href="https://wiki.archlinux.org/index.php/Beginners%27_Guide">新手教程</a></p>
 
 <p>这个guides还是很细致的，不过就怕遇到一些莫名的问题就不好了。以及一些不符合自己电脑的东西</p>
 
@@ -407,44 +299,15 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 <p>终于结束了，如果正常的话重启之后就进入grub的引导了，可以选择安装的系统。</p>
 
 <p>当然arch是需要去配置很多东西的，这里就先不说了，下次吧。。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/17/js-goodpart-object/">JS GoodPart: Object</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-17T03:03:00+08:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/17/js-goodpart-object/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>javsctipt 简单类型包括数字、字符串、boolean、null和undefined，其余都是对象（<strong>和Ruby不同</strong>）</p>
+  <entry>
+    <title type="html"><![CDATA[JS GoodPart: Object]]></title>
+    <link href="http://Tony612.github.com/blog/2012/09/17/js-goodpart-object/"/>
+    <updated>2012-09-17T03:03:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/09/17/js-goodpart-object</id>
+    <content type="html"><![CDATA[<p>javsctipt 简单类型包括数字、字符串、boolean、null和undefined，其余都是对象（<strong>和Ruby不同</strong>）</p>
 
 <p>是可变的键控集合（keyed collections）</p>
 
@@ -637,44 +500,15 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 
 
 <p>可以有效地把多个全局变量整理在一个命名空间下（这里<code>MYAPP</code>就起到命名空间的作用），可以更容易和其他程序整合，也更易读。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/03/hello/">Hello!</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-03T00:39:00+08:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/03/hello/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>关于新的博客</p>
+  <entry>
+    <title type="html"><![CDATA[Hello! ]]></title>
+    <link href="http://Tony612.github.com/blog/2012/09/03/hello/"/>
+    <updated>2012-09-03T00:39:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/09/03/hello</id>
+    <content type="html"><![CDATA[<p>关于新的博客</p>
 
 <p>早就想搞个技术博客了，之前也写过个RoR的，不过感觉写的不太好，而且又被大作业耽搁了，再加上主机的事，就显得比较麻烦。而这个月又有一些网站，和一些学习的内容，
 最近看到用好多用github来写的，觉得挺棒的，很方便，而且很hack的方法，于是我也来试试咯。等更完善的blog engine写出来，并且搞定主机之后，再用自己的去搭吧，现在
@@ -692,162 +526,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
 不能用触摸板像操纵滚动条一样调整光标的上下位置，而且没有直接启动的快捷键。不过整体还好，反应速度也不错。</p>
 
 <p>还有就是，twitter上不去了，用GAE的方法也不行，因为它像Github一样加了ssh吧，倒是安全了一些，哎，还是赶快搞个vps吧。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>A student in SCUT, GuangZhou</p>
-  <p>Diving into ruby & rails. Focusing on web development</p>
-  <p>You can contact me by github, twitter, google+ and so on. Or just comment my post.</p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/">Using map method in a incredibly elegant way</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/21/installing-the-archlinux-os/">Installing the archlinux OS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/js-goodpart-object/">JS GoodPart: Object</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/03/hello/">Hello! </a>
-      </li>
-    
-  </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/Tony612">@Tony612</a> on GitHub
-  
-  <script type="text/javascript">
-    $.domReady(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'Tony612',
-            count: 3,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-<section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("tony612_han", 4, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/tony612_han" class="twitter-follow-button" data-show-count="false">Follow @tony612_han</a>
-  
-</section>
-
-
-
-<section class="googleplus">
-  <h1>
-    <a href="https://plus.google.com/114833378773849184172?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Tony -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-<script type="text/javascript">
-      var disqus_shortname = 'echonilme';
-      
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
-
-
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
-      script.src = 'https://apis.google.com/js/plusone.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>
