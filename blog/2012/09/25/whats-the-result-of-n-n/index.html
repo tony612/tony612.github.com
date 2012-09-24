@@ -5,13 +5,22 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Using map method in a incredibly elegant way - Echo nil > me</title>
+  <title>What's the result of n << n? - Echo nil > me</title>
   <meta name="author" content="Tony">
 
   
-  <meta name="description" content="今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
-问题是，需要把多个参数转换为一个integer，然后再-1，如下： 1
-foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
+  <meta name="description" content="昨天在ruby-china上看到关于ruby的一个很有意思的问题： 1
+2
+3
+4
+5
+6
+n = [1, 2]
+a = n &lt;&lt; n
+p a
+=&gt; [1, 2, [...]]
+a[2]
+=&gt; [1, 2, [...]] 这是一个无限嵌套的数组，数组允许嵌套，这很正常， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +29,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/">
+  <link rel="canonical" href="http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -69,7 +78,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Using Map Method in a Incredibly Elegant Way</h1>
+      <h1 class="entry-title">What's the Result of N << N?</h1>
     
     
       <p class="meta">
@@ -85,7 +94,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   
 
 
-<time datetime="2012-09-22T01:38:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
+<time datetime="2012-09-25T00:50:00+08:00" pubdate data-updated="true">Sep 25<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -94,71 +103,88 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   </header>
 
 
-<div class="entry-content"><p>今天在写最近的项目的时候，遇到一个问题，本来是想等这个项目完了之后，把学到的一些一起写出来，不过觉得那时应该会工作量比较大，也比较拥挤。
-问题是，需要把多个参数转换为一个integer，然后再-1，如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>foo1, foo2, too3 ... = foo1.to_i - 1, foo2.to_i - 1, foo3.to_i -1 ...</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果变量一多，就会很麻烦，要重复写好多（我那里是8个，用了三大行才写下），就去ruby-china上求助，然后很快得到回复，然后得到了一种很漂亮的方法</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[foo1, foo2, foo3].map(&:to_i).map(&:pred)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这真算是种一看就亮了的方法吧，<strong>awesome</strong></p>
-
-<h2>map</h2>
-
-<p>map的话，确实因为ruby用的不熟，还没想到去用，而且也没考虑要把他们作为一个数组来对待，这其实就是说明一堆没有规律的数据堆在一起，不管操作还是干嘛都很不方便。
-所以这里用数组组织起来确实是很合适的，当然，这样直接赋值后的话，还并没有改变那几个变量本身，不过还是可以把结果保存在一个数组中来用的。</p>
-
-<h2>&amp;:symbol</h2>
-
-<p>最cool的应该是这个吧，看上去是挺容易看懂，就是把每次迭代器的参数对它自身调用<code>to_i</code>方法，并连续调用map。
-不过详细解释的话，还是去搜了一下,就在<a href="http://stackoverflow.com/questions/1217088/what-does-mapname-mean-in-ruby">stackoverflow的一个问题</a>里看到了相关话题。
-那个被采用的回答里提到</p>
-
-<blockquote><p>It&#8217;s shorthand for tags.map(&amp;:name.to_proc).join(&#8217; &#8216;)</p>
-
-<p>If foo is an object with a to_proc method, then you can pass it to a method as &amp;foo, which will call foo.to_proc and use that as the method&#8217;s block.</p></blockquote>
-
-<p>然后参考这个网站，著名的<a href="http://pragdave.pragprog.com/pragdave/2005/11/symbolto_proc.html">Dave Thomas的网站</a></p>
-
-<blockquote><p>When you say names.map(&amp;xxx), you’re telling Ruby to pass the Proc object in xxx to map as a block.</p>
-
-<p>If xxx isn’t already a Proc object, Ruby tries to coerce it into one by sending it a to_proc message.</p></blockquote>
-
-<p>这段就是说<strong>一个对象<code>bar</code>，如果本身是一个<code>Proc</code>，就把它传到<code>map</code>中，如果有一个<code>to_proc</code>方法，那么就调用<code>bar.to_proc</code>，并把这个转换成的<code>Proc</code>对象传入<code>map</code>中</strong>。</p>
-
-<h2>Symbol and Proc</h2>
-
-<p>去查一下ruby的api关于<a href="http://www.ruby-doc.org/core-1.9.3/Symbol.html#method-i-to_proc">Symbol类的to_proc方法</a>
-就会知道对于一个Symbol的对象，比如这里的<code>:to_i</code>前边加上<code>&amp;</code>，其实就是调用了它的<code>to_proc</code>方法而成为Proc的对象，并传给<code>map</code>这个迭代器。
-<code>Symbol#to_proc</code>的代码像这样：</p>
+<div class="entry-content"><p>昨天在ruby-china上看到关于ruby的一个很有意思的问题：</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>def to_proc
-</span><span class='line'>  proc { |obj, *args| obj.send(self, *args) }
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>n = [1, 2]
+</span><span class='line'>a = n &lt;&lt; n
+</span><span class='line'>p a
+</span><span class='line'>=&gt; [1, 2, [...]]
+</span><span class='line'>a[2]
+</span><span class='line'>=&gt; [1, 2, [...]]</span></code></pre></td></tr></table></div></figure>
 
 
-<p>上边的代码中<code>send</code>是<code>Object</code>类中定义的，就像这样<code>send(symbol [, args...]) → obj</code>，其实就是调用了obj的名字叫“symbol”的方法。
-在把上述这个proc对象传到map迭代器之后，每次迭代的数组中的一个值就相当于是<code>to_proc</code>方法中的<code>obj</code>对象，然后就对它调用<code>to_i</code>方法，就可以了。</p>
+<p>这是一个无限嵌套的数组，数组允许嵌套，这很正常，不过为什么会出现无限嵌套呢？
+好多人给出了各式的答案，还提到了用direct graph去表示递归数组的<a href="http://stackoverflow.com/questions/10606734/what-are-recursive-arrays-good-for">stackoverflow的一个问题</a>
+就是用有向图去表示了一个&lt;&lt;的过程，不过感觉还是没解释这个的原因。</p>
 
-<h2>Summary</h2>
+<h3>&lt;&lt;</h3>
 
-<p>这应该已经涉及到了元编程的动态调用方法和一些闭包的内容了，真是博大精深啊。
-正如Dave Thomas那篇文章最后说的</p>
+<p>先从<code>&lt;&lt;</code>符号说起，这是一个ruby上用的很多的符号，大概表示append或push的意思，可以用于String，Array等等的类型，甚至是非这些基础类，比如rails里的1-n的关系中就有用到。</p>
 
-<blockquote><p>It’s an incredibly elegant use of coercion and of closures.</p></blockquote>
+<h3>object_id</h3>
 
-<p>PS：其实那篇是很久前写的，他提到了<a href="http://extensions.rubyforge.org/rdoc/index.html">Ruby Extensions Project</a>
-不过现在ruby里已经把Symbol的这个方法添加进去了，而那本《Programming ruby》（379页）里也有和这篇博文差不多的一个叙述。
-这本书里又说到了，这种方式可能会造成效率的下降，不过一般的程序，还是可以用的</p>
+<p>在解释之前要先说一下<code>object_id</code>，这个有点想C++或java里的对象的地址，简单来说就是唯一标识对象的。
+在irb里，可以看到<code>[1, 2] &lt;&lt; [1, 2]</code>这个的结果是和我们预期的一样的：<code>[1, 2, [1, 2]]</code>，而查看<code>[1, 2]</code>的<code>object_id</code>，会发现</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1.9.3p194 :005 &gt; [1, 2].object_id
+</span><span class='line'> =&gt; 84087500 
+</span><span class='line'>1.9.3p194 :006 &gt; [1, 2].object_id
+</span><span class='line'> =&gt; 84084000 
+</span><span class='line'>1.9.3p194 :007 &gt; [1, 2].object_id
+</span><span class='line'> =&gt; 84104730 
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也就是说，看似一样的前后的<code>[1, 2]</code>其实并不一样，也就是说两个不同的对象（object_id），比如<code>a</code>和<code>b</code>，<code>a &lt;&lt; b</code>所得到的结果是正常的。
+而<code>n &lt;&lt; n</code>的结果为什么有点出乎意料呢？</p>
+
+<h3>My explanation</h3>
+
+<p>在我看来这应该只是Matz做的一个约定或他对于这种情况——<code>&lt;&lt;</code>作用于自身——的解释和理解吧。
+而我的解释是这样的，在<code>&lt;&lt;</code>右边的<code>n</code>作用于左边的<code>n</code>时，左边的<code>n</code>就发生了变化，变成了<code>[1, 2, [1, 2]]</code>，到这里还是很正常的。</p>
+
+<p>但是，问题来了，加入把这个过程放慢的话，左边的<code>n</code>发生了变化，右边的<code>n</code>也要发生变化啊，所以右边的<code>n</code>就也变成了<code>[1, 2, [1, 2]]</code>。
+但还没完，右边的<code>n</code>正在作用于左边的<code>n</code>，所以左边的<code>n</code>其实就又成了<code>[1, 2, [1, 2, [1, 2]]]</code>.</p>
+
+<p>如此下去，是没完没了了，所以就变成了无限的嵌套数组，无限的递归下去了。这里应该也可以报错的吧，不过Matz还是选择了用<code>[...]</code>来代表无限的递归嵌套。</p>
+
+<p>Hash也是可以有这样的结果的（来自@hooopo）：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1.9.3p194 :032 &gt; a = {:a =&gt; 1}
+</span><span class='line'> =&gt; {:a=&gt;1} 
+</span><span class='line'>1.9.3p194 :033 &gt; a[:b] =  a
+</span><span class='line'> =&gt; {:a=&gt;1, :b=&gt;{...}} </span></code></pre></td></tr></table></div></figure>
+
+
+<p>应该是因为Array和Hash允许嵌套的形式，所以会出现这种情况，换种类型就不一定了，比如String：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1.9.3p194 :023 &gt; n = "abc"
+</span><span class='line'> =&gt; "abc" 
+</span><span class='line'>1.9.3p194 :024 &gt; n &lt;&lt; n
+</span><span class='line'>=&gt; "abcabc"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然，这仅仅是个人对于ruby里这样的结果的一个思考和猜想，至于真正原因，恐怕还要问Matz</p>
 </div>
 
 
@@ -181,12 +207,12 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
   
 
 
-<time datetime="2012-09-22T01:38:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
+<time datetime="2012-09-25T00:50:00+08:00" pubdate data-updated="true">Sep 25<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/metaprogramming/'>metaprogramming</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
   
 </span>
 
@@ -195,7 +221,7 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/" data-via="tony612_han" data-counturl="http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n/" data-via="tony612_han" data-counturl="http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -206,10 +232,8 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/09/21/installing-the-archlinux-os/" title="Previous Post: Installing the archlinux OS">&laquo; Installing the archlinux OS</a>
+        <a class="basic-alignment left" href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/" title="Previous Post: Using map method in a incredibly elegant way">&laquo; Using map method in a incredibly elegant way</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/09/25/whats-the-result-of-n-n/" title="Next Post: What's the result of n << n?">What's the result of n << n? &raquo;</a>
       
     </p>
   </footer>
@@ -336,8 +360,8 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2. &hellip;">
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/';
-        var disqus_url = 'http://Tony612.github.com/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/';
+        var disqus_identifier = 'http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n/';
+        var disqus_url = 'http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n/';
         var disqus_script = 'embed.js';
       
     (function () {

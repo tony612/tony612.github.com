@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tips | Echo nil > me]]></title>
   <link href="http://Tony612.github.com/blog/categories/tips/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-09-22T15:24:20+08:00</updated>
+  <updated>2012-09-25T01:44:03+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -12,6 +12,73 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[What's the result of n << n?]]></title>
+    <link href="http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n/"/>
+    <updated>2012-09-25T00:50:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/09/25/whats-the-result-of-n-n</id>
+    <content type="html"><![CDATA[<p>昨天在ruby-china上看到关于ruby的一个很有意思的问题：
+<code>
+n = [1, 2]
+a = n &lt;&lt; n
+p a
+=&gt; [1, 2, [...]]
+a[2]
+=&gt; [1, 2, [...]]
+</code>
+这是一个无限嵌套的数组，数组允许嵌套，这很正常，不过为什么会出现无限嵌套呢？
+好多人给出了各式的答案，还提到了用direct graph去表示递归数组的<a href="http://stackoverflow.com/questions/10606734/what-are-recursive-arrays-good-for">stackoverflow的一个问题</a>
+就是用有向图去表示了一个&lt;&lt;的过程，不过感觉还是没解释这个的原因。</p>
+
+<h3>&lt;&lt;</h3>
+
+<p>先从<code>&lt;&lt;</code>符号说起，这是一个ruby上用的很多的符号，大概表示append或push的意思，可以用于String，Array等等的类型，甚至是非这些基础类，比如rails里的1-n的关系中就有用到。</p>
+
+<h3>object_id</h3>
+
+<p>在解释之前要先说一下<code>object_id</code>，这个有点想C++或java里的对象的地址，简单来说就是唯一标识对象的。
+在irb里，可以看到<code>[1, 2] &lt;&lt; [1, 2]</code>这个的结果是和我们预期的一样的：<code>[1, 2, [1, 2]]</code>，而查看<code>[1, 2]</code>的<code>object_id</code>，会发现
+```
+1.9.3p194 :005 > [1, 2].object_id
+ => 84087500
+1.9.3p194 :006 > [1, 2].object_id
+ => 84084000
+1.9.3p194 :007 > [1, 2].object_id
+ => 84104730</p>
+
+<p><code>``
+也就是说，看似一样的前后的</code>[1, 2]<code>其实并不一样，也就是说两个不同的对象（object_id），比如</code>a<code>和</code>b<code>，</code>a &lt;&lt; b<code>所得到的结果是正常的。
+而</code>n &lt;&lt; n`的结果为什么有点出乎意料呢？</p>
+
+<h3>My explanation</h3>
+
+<p>在我看来这应该只是Matz做的一个约定或他对于这种情况——<code>&lt;&lt;</code>作用于自身——的解释和理解吧。
+而我的解释是这样的，在<code>&lt;&lt;</code>右边的<code>n</code>作用于左边的<code>n</code>时，左边的<code>n</code>就发生了变化，变成了<code>[1, 2, [1, 2]]</code>，到这里还是很正常的。</p>
+
+<p>但是，问题来了，加入把这个过程放慢的话，左边的<code>n</code>发生了变化，右边的<code>n</code>也要发生变化啊，所以右边的<code>n</code>就也变成了<code>[1, 2, [1, 2]]</code>。
+但还没完，右边的<code>n</code>正在作用于左边的<code>n</code>，所以左边的<code>n</code>其实就又成了<code>[1, 2, [1, 2, [1, 2]]]</code>.</p>
+
+<p>如此下去，是没完没了了，所以就变成了无限的嵌套数组，无限的递归下去了。这里应该也可以报错的吧，不过Matz还是选择了用<code>[...]</code>来代表无限的递归嵌套。</p>
+
+<p>Hash也是可以有这样的结果的（来自@hooopo）：
+<code>
+1.9.3p194 :032 &gt; a = {:a =&gt; 1}
+ =&gt; {:a=&gt;1}
+1.9.3p194 :033 &gt; a[:b] =  a
+ =&gt; {:a=&gt;1, :b=&gt;{...}}
+</code>
+应该是因为Array和Hash允许嵌套的形式，所以会出现这种情况，换种类型就不一定了，比如String：
+<code>
+1.9.3p194 :023 &gt; n = "abc"
+ =&gt; "abc"
+1.9.3p194 :024 &gt; n &lt;&lt; n
+=&gt; "abcabc"
+</code></p>
+
+<p>当然，这仅仅是个人对于ruby里这样的结果的一个思考和猜想，至于真正原因，恐怕还要问Matz</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Using map method in a incredibly elegant way]]></title>
