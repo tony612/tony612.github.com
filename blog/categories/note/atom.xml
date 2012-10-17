@@ -4,7 +4,7 @@
   <title><![CDATA[Category: note | Echo nil > me]]></title>
   <link href="http://Tony612.github.com/blog/categories/note/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-09-25T01:44:03+08:00</updated>
+  <updated>2012-10-18T00:19:50+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -51,6 +51,9 @@ flight.equipment // undefined
 flight.equipment.model // throw "TypeError"
 flight.equipment &amp;&amp; flight.equipment.model // undefined
 </code></p>
+
+<!-- More -->
+
 
 <h2>赋值</h2>
 

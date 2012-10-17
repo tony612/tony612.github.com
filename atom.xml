@@ -4,7 +4,7 @@
   <title><![CDATA[Echo nil > me]]></title>
   <link href="http://Tony612.github.com/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-09-25T01:44:03+08:00</updated>
+  <updated>2012-10-18T00:19:50+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -12,6 +12,120 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveRecord--ORM of Rails(1)]]></title>
+    <link href="http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails/"/>
+    <updated>2012-10-17T23:07:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails</id>
+    <content type="html"><![CDATA[<p>最近在看ihower的实战圣经，白天不能上网的话就看《Agile Web Development with rails》的后半部分，又看了railscasts开始几集，正好都讲到了ActiveRecord,也就是rails里MVC的model部分，就索性做个总结。</p>
+
+<h2>ORM</h2>
+
+<p>ActiveRecord是rails定义的一个类，是rails的ORM，很强大。</p>
+
+<p>ORM(Object-relational mappiing)，用我自己的话来说，就是建立在数据库与web程序之间的一种抽象机制，把关系行数据库的表和程序中的对象建立关系，简化了对于数据库的操作，起到了极大的简化作用。而这种抽象与简化对于那些SQL用的不是很熟练的人，对于开发web应用有很好的方便，可以不过多关注底层的sql，而专注于web应用本身。而有些人可能会比较反对这种机制，因为效率或是其他原因。</p>
+
+<p>而Joel Spolsky有个抽象渗漏法则，就是说</p>
+
+<blockquote><p>所有重大的抽象机制在某种程度上说都是有漏洞的。比如C语言简化了组合语言的繁杂，ruby简化了C，TCP简化了IP，而他们又都有一些缺陷，而他们的实现里又都会混入一些后者，来达到效率等目的。</p></blockquote>
+
+<p>但是，取舍在于这种抽象能带来更大的好处，比如开发时间的缩短或是怎样。比如，学习ruby、rails这些时间，确实感觉到了它们的快速和方便，虽然听说效率可能不及C或java，但是他们带来的时间的节省以及带给程序员的快乐是很大的，我觉得这些原因就足够了。</p>
+
+<!-- More -->
+
+
+<h2>Dynamic Find</h2>
+
+<p>查询是数据库操作很重要的一部分，ActiveRecord有first、last、all、find、where，以及limit、order、offset、select、group等方法。</p>
+
+<p>这里就主要说一些其中的Find，因为有ruby里动态方法，所以显得很神奇和强大。</p>
+
+<p>find单独用的话，可以直接传入id，如<code>c = Order.find(1)</code>来得到表的一行数据，然后经过rails处理，变为ruby的某个类型的对象。railscasts里说还可以传入参数，进行查询，不过查了其他资料，没见到用的，可能是rails3取消了，统一用动态方法了？</p>
+
+<p>还有<code>find\_by\_sql("...")</code>，可以把sql语句传进去进行查询。</p>
+
+<p>好了，说动态方法，其实是把要查询的条件直接作为方法名来使用。这里举几个例子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>User.find_by_first_name('Jack')    #根据first_name这个属性来找到first_name为Jack的User，而且这里默认是first（第一个）
+</span><span class='line'>User.find_all_by_first_name('Jack')   #这里则是找到所有叫Jack的人
+</span><span class='line'>User.find_last_by_first_name('Jack')  #找到最后一个满足条件的
+</span><span class='line'>User.find_by_first_name_and_locked("Jack", true)  #这里则传入了两个参数</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里可以把任何属性名放到by后边（多个词的话就要用&#8217;_&#8217;隔开），有点magic的感觉，其实都是因为ruby的Metaprogramming（元编程）的原因。先不说，因为还要多差点资料 ：）。</p>
+
+<h2>Scope</h2>
+
+<p>这其实是很酷的东西，可以让查询变得很灵活，代码看起来也很简洁，之前看angle_nest的代码，看到model中的scope就惊艳了，这么好的东西以前居然不知道的。
+它最帅的，就是可以把几个单独的小一点的查询连起来，以及指尖的相互组合查询。如(来自ihower)：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Event &lt; ActiveRecord::Base
+</span><span class='line'>    scope :public, where( :is_public =&gt; true )
+</span><span class='line'>    scope :recent_three_days, where(["created_at &gt; ? ", Time.now - 3.days ])
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>      Event.create( :name =&gt; "public event", :is_public =&gt; true )
+</span><span class='line'>      Event.create( :name =&gt; "private event", :is_public =&gt; false )
+</span><span class='line'>      Event.create( :name =&gt; "private event", :is_public =&gt; true )
+</span><span class='line'>
+</span><span class='line'>      Event.public
+</span><span class='line'>      Event.public.recent_three_days</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还可以传入参数：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Event &lt; ActiveRecord::Base
+</span><span class='line'>    scope :recent, lambda{ |date| where(["created_at &gt; ? ", date ]) } 
+</span><span class='line'>    # 或 scope :recent, Proc.new{ |t| where(["created_at &gt; ? ", t ]) }
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>    Event.recent( Time.now - 7.days )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里是可以查询到最近多久的Event。
+不过这里，ihower和guides里都推荐换成这种形式，可读性比较强：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Event &lt; ActiveRecord::Base
+</span><span class='line'>    def self.recent(t=Time.now)
+</span><span class='line'>        where(["created_at &gt; ? ", t ])
+</span><span class='line'>    end
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>Event.recent( Time.now - 7.days )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种也可以和其他Scope连在一起使用。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[What's the result of n << n?]]></title>
@@ -60,6 +174,9 @@
 </span><span class='line'>1.9.3p194 :007 &gt; [1, 2].object_id
 </span><span class='line'> =&gt; 84104730 
 </span></code></pre></td></tr></table></div></figure>
+
+
+<!-- More -->
 
 
 <p>也就是说，看似一样的前后的<code>[1, 2]</code>其实并不一样，也就是说两个不同的对象（object_id），比如<code>a</code>和<code>b</code>，<code>a &lt;&lt; b</code>所得到的结果是正常的。
@@ -138,6 +255,9 @@
 
 <p>If foo is an object with a to_proc method, then you can pass it to a method as &amp;foo, which will call foo.to_proc and use that as the method&#8217;s block.</p></blockquote>
 
+<!-- More -->
+
+
 <p>然后参考这个网站，著名的<a href="http://pragdave.pragprog.com/pragdave/2005/11/symbolto_proc.html">Dave Thomas的网站</a></p>
 
 <blockquote><p>When you say names.map(&amp;xxx), you’re telling Ruby to pass the Proc object in xxx to map as a block.</p>
@@ -194,6 +314,9 @@
 <h3>下载</h3>
 
 <p>首先当然是下载了，可以从这里下载，官方推荐用BitTorrent下载，但我这里几乎不能下载，就找到了国内的镜像，挨个点开，比较了一下，当时属北交的最快，十几分钟就搞定了。 当然，下载完了最好检查一下文件的完整性，用sha1sum archlinux-2012.XX.XX-XXXX.iso或md5sum archlinux-2012.XX.XX-XXXX.iso，会得到一个类似于这样的码<code>fa01ac8b4186c17cf7725e24c62c0e1891fcacc0 archlinux-2012.09.07-dual.iso</code>，然后和刚刚下载镜像的那个网站中的sha1sum或md5sum文件中的内容做对比看是不是一样的。</p>
+
+<!-- More -->
+
 
 <h3>U盘启动</h3>
 
@@ -433,6 +556,9 @@
 </span><span class='line'>flight.equipment // undefined
 </span><span class='line'>flight.equipment.model // throw "TypeError"
 </span><span class='line'>flight.equipment && flight.equipment.model // undefined</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- More -->
 
 
 <h2>赋值</h2>

@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ActiveRecord--ORM of Rails(1) - Echo nil > me</title>
+  <meta name="author" content="Tony">
+
+  
+  <meta name="description" content="最近在看ihower的实战圣经，白天不能上网的话就看《Agile Web Development with rails》的后半部分，又看了railscasts开始几集，正好都讲到了ActiveRecord,也就是rails里MVC的model部分，就索性做个总结。 ORM &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Echo nil > me" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Echo nil > me</a></h1>
+  
+    <h2>Bleach me and begin again</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:Tony612.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ActiveRecord--ORM of Rails(1)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-17T23:07:00+08:00" pubdate data-updated="true">Oct 17<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>最近在看ihower的实战圣经，白天不能上网的话就看《Agile Web Development with rails》的后半部分，又看了railscasts开始几集，正好都讲到了ActiveRecord,也就是rails里MVC的model部分，就索性做个总结。</p>
+
+<h2>ORM</h2>
+
+<p>ActiveRecord是rails定义的一个类，是rails的ORM，很强大。</p>
+
+<p>ORM(Object-relational mappiing)，用我自己的话来说，就是建立在数据库与web程序之间的一种抽象机制，把关系行数据库的表和程序中的对象建立关系，简化了对于数据库的操作，起到了极大的简化作用。而这种抽象与简化对于那些SQL用的不是很熟练的人，对于开发web应用有很好的方便，可以不过多关注底层的sql，而专注于web应用本身。而有些人可能会比较反对这种机制，因为效率或是其他原因。</p>
+
+<p>而Joel Spolsky有个抽象渗漏法则，就是说</p>
+
+<blockquote><p>所有重大的抽象机制在某种程度上说都是有漏洞的。比如C语言简化了组合语言的繁杂，ruby简化了C，TCP简化了IP，而他们又都有一些缺陷，而他们的实现里又都会混入一些后者，来达到效率等目的。</p></blockquote>
+
+<p>但是，取舍在于这种抽象能带来更大的好处，比如开发时间的缩短或是怎样。比如，学习ruby、rails这些时间，确实感觉到了它们的快速和方便，虽然听说效率可能不及C或java，但是他们带来的时间的节省以及带给程序员的快乐是很大的，我觉得这些原因就足够了。</p>
+
+<!-- More -->
+
+
+<h2>Dynamic Find</h2>
+
+<p>查询是数据库操作很重要的一部分，ActiveRecord有first、last、all、find、where，以及limit、order、offset、select、group等方法。</p>
+
+<p>这里就主要说一些其中的Find，因为有ruby里动态方法，所以显得很神奇和强大。</p>
+
+<p>find单独用的话，可以直接传入id，如<code>c = Order.find(1)</code>来得到表的一行数据，然后经过rails处理，变为ruby的某个类型的对象。railscasts里说还可以传入参数，进行查询，不过查了其他资料，没见到用的，可能是rails3取消了，统一用动态方法了？</p>
+
+<p>还有<code>find\_by\_sql("...")</code>，可以把sql语句传进去进行查询。</p>
+
+<p>好了，说动态方法，其实是把要查询的条件直接作为方法名来使用。这里举几个例子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>User.find_by_first_name('Jack')    #根据first_name这个属性来找到first_name为Jack的User，而且这里默认是first（第一个）
+</span><span class='line'>User.find_all_by_first_name('Jack')   #这里则是找到所有叫Jack的人
+</span><span class='line'>User.find_last_by_first_name('Jack')  #找到最后一个满足条件的
+</span><span class='line'>User.find_by_first_name_and_locked("Jack", true)  #这里则传入了两个参数</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里可以把任何属性名放到by后边（多个词的话就要用&#8217;_&#8217;隔开），有点magic的感觉，其实都是因为ruby的Metaprogramming（元编程）的原因。先不说，因为还要多差点资料 ：）。</p>
+
+<h2>Scope</h2>
+
+<p>这其实是很酷的东西，可以让查询变得很灵活，代码看起来也很简洁，之前看angle_nest的代码，看到model中的scope就惊艳了，这么好的东西以前居然不知道的。
+它最帅的，就是可以把几个单独的小一点的查询连起来，以及指尖的相互组合查询。如(来自ihower)：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Event &lt; ActiveRecord::Base
+</span><span class='line'>    scope :public, where( :is_public =&gt; true )
+</span><span class='line'>    scope :recent_three_days, where(["created_at &gt; ? ", Time.now - 3.days ])
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>      Event.create( :name =&gt; "public event", :is_public =&gt; true )
+</span><span class='line'>      Event.create( :name =&gt; "private event", :is_public =&gt; false )
+</span><span class='line'>      Event.create( :name =&gt; "private event", :is_public =&gt; true )
+</span><span class='line'>
+</span><span class='line'>      Event.public
+</span><span class='line'>      Event.public.recent_three_days</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还可以传入参数：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Event &lt; ActiveRecord::Base
+</span><span class='line'>    scope :recent, lambda{ |date| where(["created_at &gt; ? ", date ]) } 
+</span><span class='line'>    # 或 scope :recent, Proc.new{ |t| where(["created_at &gt; ? ", t ]) }
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>    Event.recent( Time.now - 7.days )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里是可以查询到最近多久的Event。
+不过这里，ihower和guides里都推荐换成这种形式，可读性比较强：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Event &lt; ActiveRecord::Base
+</span><span class='line'>    def self.recent(t=Time.now)
+</span><span class='line'>        where(["created_at &gt; ? ", t ])
+</span><span class='line'>    end
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>Event.recent( Time.now - 7.days )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种也可以和其他Scope连在一起使用。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Tony</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-17T23:07:00+08:00" pubdate data-updated="true">Oct 17<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby-/'>ruby,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails/" data-via="tony612_han" data-counturl="http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/25/whats-the-result-of-n-n/" title="Previous Post: What's the result of n << n?">&laquo; What's the result of n << n?</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>A student in SCUT, GuangZhou</p>
+  <p>Diving into ruby & rails. Focusing on web development</p>
+  <p>You can contact me by github, twitter, google+ and so on. Or just comment my post.</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/17/activerecord-orm-of-rails/">ActiveRecord--ORM of Rails(1)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/25/whats-the-result-of-n-n/">What's the result of n << n?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/">Using map method in a incredibly elegant way</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/21/installing-the-archlinux-os/">Installing the archlinux OS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/17/js-goodpart-object/">JS GoodPart: Object</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Tony612">@Tony612</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Tony612',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("tony612_han", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/tony612_han" class="twitter-follow-button" data-show-count="false">Follow @tony612_han</a>
+  
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/114833378773849184172?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Tony -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'echonilme';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails/';
+        var disqus_url = 'http://Tony612.github.com/blog/2012/10/17/activerecord-orm-of-rails/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

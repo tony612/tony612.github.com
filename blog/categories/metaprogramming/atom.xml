@@ -4,7 +4,7 @@
   <title><![CDATA[Category: metaprogramming | Echo nil > me]]></title>
   <link href="http://Tony612.github.com/blog/categories/metaprogramming/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-09-25T01:44:03+08:00</updated>
+  <updated>2012-10-18T00:19:50+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -43,6 +43,9 @@ foo1, foo2, too3 ... = foo1.to_i - 1, foo2.to_i - 1, foo3.to_i -1 ...
 <blockquote><p>It's shorthand for tags.map(&amp;:name.to_proc).join(' ')</p>
 
 <p>If foo is an object with a to_proc method, then you can pass it to a method as &amp;foo, which will call foo.to_proc and use that as the method's block.</p></blockquote>
+
+<!-- More -->
+
 
 <p>然后参考这个网站，著名的<a href="http://pragdave.pragprog.com/pragdave/2005/11/symbolto_proc.html">Dave Thomas的网站</a></p>
 

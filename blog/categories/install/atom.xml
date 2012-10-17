@@ -4,7 +4,7 @@
   <title><![CDATA[Category: install | Echo nil > me]]></title>
   <link href="http://Tony612.github.com/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-09-25T01:44:03+08:00</updated>
+  <updated>2012-10-18T00:19:50+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -31,6 +31,9 @@
 <h3>下载</h3>
 
 <p>首先当然是下载了，可以从这里下载，官方推荐用BitTorrent下载，但我这里几乎不能下载，就找到了国内的镜像，挨个点开，比较了一下，当时属北交的最快，十几分钟就搞定了。 当然，下载完了最好检查一下文件的完整性，用sha1sum archlinux-2012.XX.XX-XXXX.iso或md5sum archlinux-2012.XX.XX-XXXX.iso，会得到一个类似于这样的码<code>fa01ac8b4186c17cf7725e24c62c0e1891fcacc0 archlinux-2012.09.07-dual.iso</code>，然后和刚刚下载镜像的那个网站中的sha1sum或md5sum文件中的内容做对比看是不是一样的。</p>
+
+<!-- More -->
+
 
 <h3>U盘启动</h3>
 
