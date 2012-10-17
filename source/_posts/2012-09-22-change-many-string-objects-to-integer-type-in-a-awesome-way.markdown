@@ -27,6 +27,8 @@ map的话，确实因为ruby用的不熟，还没想到去用，而且也没考�
 >
 >If foo is an object with a to_proc method, then you can pass it to a method as &foo, which will call foo.to_proc and use that as the method's block.
 
+<!-- More -->
+
 然后参考这个网站，著名的[Dave Thomas的网站](http://pragdave.pragprog.com/pragdave/2005/11/symbolto_proc.html)
 
 >When you say names.map(&xxx), you’re telling Ruby to pass the Proc object in xxx to map as a block. 

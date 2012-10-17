@@ -32,7 +32,7 @@ flight.equipment // undefined
 flight.equipment.model // throw "TypeError"
 flight.equipment && flight.equipment.model // undefined
 ```
-
+<!-- More -->
 ##赋值
 
 ####***PS： 如果属性不存在，该属性就被加入对象到属性中去***
