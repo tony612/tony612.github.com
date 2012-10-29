@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Echo nil > me]]></title>
   <link href="http://Tony612.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-10-18T00:19:50+08:00</updated>
+  <updated>2012-10-30T01:21:49+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -12,6 +12,57 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveRecord-ORM of Rails(2)]]></title>
+    <link href="http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/"/>
+    <updated>2012-10-22T01:17:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails</id>
+    <content type="html"><![CDATA[<p>这两天重装系统，没做什么事情，装系统现在已经很快了，只是还在做好多的后续工作，回头再写篇总结好了。先写之前剩下的一篇。这次是聊点ActiveRecord的callback。</p>
+
+<h2>Monitor</h2>
+
+<p>ActiveRecord控制model的生命周期，包括他们的CRUD（《Agile..》上很风趣地说是watches sadly as they are destroyed. haha）。</p>
+
+<p>而在这过程中的许多时刻我们都可以通过callbacks来进行一些操作.</p>
+
+<p>ActiveRecord定义了十六个回调函数，十四个是<code>before/after_func</code>的形式，分别在一些函数之前或之后被调用，如<code>destory, validation</code>,两个特别的是after_find以及after_initialize，这两个没有对应的before。</p>
+
+<p>他们的流程如下：
+<img src="/images/callbackactiverecord.png"></p>
+
+<!-- more -->
+
+
+<p>做个简单的解释，<code>save()</code>会产生两种行为，一种是新产生，一种是更新。而这两种行为可以通过<code>before_validation</code>或<code>after_validation</code>等的方法加上参数<code>on: create</code>或<code>on: update</code>来决定是哪种。</p>
+
+<p>而之前提到的<code>after_find</code>是在任何find操作后会调用，<code>after_initialize</code>则会在一个Active Record的对象产生后调用。我的理解是，比如<code>Model.new()</code>这个只是产生了一个ActiveRecord对象，并没有save，所以调用<code>after_initialize</code>。</p>
+
+<p>怎么用呢？ 我们需要写一个handler和一个与它关联的相应的回调函数。</p>
+
+<p>比如：
+```
+class Order &lt; ActiveRecord::Base
+  before_validation :normalize_credit_card_number
+  after_create do |order|</p>
+
+<pre><code>logger.info "Order #{order.id} created"
+</code></pre>
+
+<p>  end
+  protected
+  def normalize_credit_card_number</p>
+
+<pre><code>self.cc_number.gsub!(/[-\s]/, '')
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>在<code>before_validation normalize_credit_card_number</code>中声明了一个handler并把它关联到<code>before_validation</code>这个事件中。然后再定义一个函数就行，这个函数最好是private或protected的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[What's the result of n << n?]]></title>

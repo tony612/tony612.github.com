@@ -4,7 +4,7 @@
   <title><![CDATA[Echo nil > me]]></title>
   <link href="http://Tony612.github.com/atom.xml" rel="self"/>
   <link href="http://Tony612.github.com/"/>
-  <updated>2012-10-18T00:19:50+08:00</updated>
+  <updated>2012-10-30T01:21:49+08:00</updated>
   <id>http://Tony612.github.com/</id>
   <author>
     <name><![CDATA[Tony]]></name>
@@ -12,6 +12,91 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Use include for querying to optimize]]></title>
+    <link href="http://Tony612.github.com/blog/2012/10/29/use-include-for-querying-to-increase-the-efficiency/"/>
+    <updated>2012-10-29T23:06:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/10/29/use-include-for-querying-to-increase-the-efficiency</id>
+    <content type="html"><![CDATA[<p>今天写项目，然后参考ruby-china的一部分代码的时候，看到一个<code>include</code>的用法，不知道是怎么回事，因为它是用mongodb的，所以也一时找不到<code>ActiveRecord</code>中的用法。</p>
+
+<p>不过刚刚在看railscasts的时候，突然就看到了这种用法:</p>
+
+<p>比如说<code>Task</code>和<code>Project</code>是多对一的关系</p>
+
+<p>在index的页面需要用到<code>Task</code>和它<code>belongs_to</code>的那个<code>Project</code>，这样的话，看log里，会发现，查找了<code>Project</code>了很多次。</p>
+
+<p>那么就能用<code>@tasks = Task.find(:all, :include =&gt; :project)</code>来查到和project关联的task，这样的话可以把相关联的对象也先读取出来。</p>
+
+<p>那么有什么结果呢？</p>
+
+<p>在console的log里就看得很清楚了，载入页面之后，两次查询就够了。</p>
+
+<p>我自己去写的时候，<code>find</code>方法不起作用，不知道是因为这是以前的写法还是怎样。
+就看到实战圣经上有说这个的，原来是<code>includes</code>方法，比如：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@events = Event.includes(:user).order('start_date DESC').page(params[:page])</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就能查询到最近的<code>event</code>,并把对应的<code>user</code>包含进去，再进行分页了。顿时感觉世界好美好的有木有！！ 哈哈~</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveRecord-ORM of Rails(2)]]></title>
+    <link href="http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/"/>
+    <updated>2012-10-22T01:17:00+08:00</updated>
+    <id>http://Tony612.github.com/blog/2012/10/22/activerecord&#8211;orm_of_rails</id>
+    <content type="html"><![CDATA[<p>这两天重装系统，没做什么事情，装系统现在已经很快了，只是还在做好多的后续工作，回头再写篇总结好了。先写之前剩下的一篇。这次是聊点ActiveRecord的callback。</p>
+
+<h2>Monitor</h2>
+
+<p>ActiveRecord控制model的生命周期，包括他们的CRUD（《Agile..》上很风趣地说是watches sadly as they are destroyed. haha）。</p>
+
+<p>而在这过程中的许多时刻我们都可以通过callbacks来进行一些操作.</p>
+
+<p>ActiveRecord定义了十六个回调函数，十四个是<code>before/after_func</code>的形式，分别在一些函数之前或之后被调用，如<code>destory, validation</code>,两个特别的是after_find以及after_initialize，这两个没有对应的before。</p>
+
+<p>他们的流程如下：
+<img src="http://Tony612.github.com/images/callbackactiverecord.png"></p>
+
+<!-- more -->
+
+
+<p>做个简单的解释，<code>save()</code>会产生两种行为，一种是新产生，一种是更新。而这两种行为可以通过<code>before_validation</code>或<code>after_validation</code>等的方法加上参数<code>on: create</code>或<code>on: update</code>来决定是哪种。</p>
+
+<p>而之前提到的<code>after_find</code>是在任何find操作后会调用，<code>after_initialize</code>则会在一个Active Record的对象产生后调用。我的理解是，比如<code>Model.new()</code>这个只是产生了一个ActiveRecord对象，并没有save，所以调用<code>after_initialize</code>。</p>
+
+<p>怎么用呢？ 我们需要写一个handler和一个与它关联的相应的回调函数。</p>
+
+<p>比如：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Order &lt; ActiveRecord::Base
+</span><span class='line'>  before_validation :normalize_credit_card_number
+</span><span class='line'>  after_create do |order|
+</span><span class='line'>    logger.info "Order #{order.id} created"
+</span><span class='line'>  end
+</span><span class='line'>  protected
+</span><span class='line'>  def normalize_credit_card_number
+</span><span class='line'>    self.cc_number.gsub!(/[-\s]/, '')
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在<code>before_validation normalize_credit_card_number</code>中声明了一个handler并把它关联到<code>before_validation</code>这个事件中。然后再定义一个函数就行，这个函数最好是private或protected的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveRecord--ORM of Rails(1)]]></title>

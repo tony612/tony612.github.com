@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Hello!  - Echo nil > me</title>
+  <title>ActiveRecord-ORM of Rails(2) - Echo nil > me</title>
   <meta name="author" content="Tony">
 
   
-  <meta name="description" content="关于新的博客 早就想搞个技术博客了，之前也写过个RoR的，不过感觉写的不太好，而且又被大作业耽搁了，再加上主机的事，就显得比较麻烦。而这个月又有一些网站，和一些学习的内容，
-最近看到用好多用github来写的，觉得挺棒的，很方便，而且很hack的方法，于是我也来试试咯。等更完善的blog &hellip;">
+  <meta name="description" content="这两天重装系统，没做什么事情，装系统现在已经很快了，只是还在做好多的后续工作，回头再写篇总结好了。先写之前剩下的一篇。这次是聊点ActiveRecord的callback。 Monitor ActiveRecord控制model的生命周期，包括他们的CRUD（《Agile..》 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://Tony612.github.com/blog/2012/09/03/hello/">
+  <link rel="canonical" href="http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -68,7 +67,7 @@
   
   <header>
     
-      <h1 class="entry-title">Hello!</h1>
+      <h1 class="entry-title">ActiveRecord-ORM of Rails(2)</h1>
     
     
       <p class="meta">
@@ -84,7 +83,7 @@
   
 
 
-<time datetime="2012-09-03T00:39:00+08:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2012</time>
+<time datetime="2012-10-22T01:17:00+08:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -93,24 +92,53 @@
   </header>
 
 
-<div class="entry-content"><p>关于新的博客</p>
+<div class="entry-content"><p>这两天重装系统，没做什么事情，装系统现在已经很快了，只是还在做好多的后续工作，回头再写篇总结好了。先写之前剩下的一篇。这次是聊点ActiveRecord的callback。</p>
 
-<p>早就想搞个技术博客了，之前也写过个RoR的，不过感觉写的不太好，而且又被大作业耽搁了，再加上主机的事，就显得比较麻烦。而这个月又有一些网站，和一些学习的内容，
-最近看到用好多用github来写的，觉得挺棒的，很方便，而且很hack的方法，于是我也来试试咯。等更完善的blog engine写出来，并且搞定主机之后，再用自己的去搭吧，现在
-还是一切从简。</p>
+<h2>Monitor</h2>
 
-<p>博客的名字也是早就想好的，用shell的一个挺漂亮的echo命令和ruby里的nil来构成，也很hack，哈哈</p>
+<p>ActiveRecord控制model的生命周期，包括他们的CRUD（《Agile..》上很风趣地说是watches sadly as they are destroyed. haha）。</p>
 
-<p>博客的搭建，参见<a href="http://octopress.org/">octopress</a>，不知道这个名字是怎么取的，不过和wordpress有点像的感觉，是用来表示博客相关的吧，大概。</p>
+<p>而在这过程中的许多时刻我们都可以通过callbacks来进行一些操作.</p>
 
-<p>基本上按照上边网站的指示来搭建就行，当然也可以选择在heroku或是Rsync(第一次听到这个)。不过也有一些问题,主要是在改动_config.yml来进行配置后，先push到remote
-那边，结果网页显示不变，看了github上的代码，是有改动的。google之后知道，是因为还要执行<code>rake setup_github_pages</code>来进行初始化deploy，再进行<code>rake deploy</code>就
-可以了。</p>
+<p>ActiveRecord定义了十六个回调函数，十四个是<code>before/after_func</code>的形式，分别在一些函数之前或之后被调用，如<code>destory, validation</code>,两个特别的是after_find以及after_initialize，这两个没有对应的before。</p>
 
-<p>最后就是，发现现在换的这个Terminal <a href="http://guake.org/">Guake</a>对中文的显示感觉挺好的，而且挺漂亮，对vim的color-scheme的显示也会比自带的terminal要好一点，当然也有点不足，比如在vim下
-不能用触摸板像操纵滚动条一样调整光标的上下位置，而且没有直接启动的快捷键。不过整体还好，反应速度也不错。</p>
+<p>他们的流程如下：
+<img src="/images/callbackactiverecord.png"></p>
 
-<p>还有就是，twitter上不去了，用GAE的方法也不行，因为它像Github一样加了ssh吧，倒是安全了一些，哎，还是赶快搞个vps吧。</p>
+<!-- more -->
+
+
+<p>做个简单的解释，<code>save()</code>会产生两种行为，一种是新产生，一种是更新。而这两种行为可以通过<code>before_validation</code>或<code>after_validation</code>等的方法加上参数<code>on: create</code>或<code>on: update</code>来决定是哪种。</p>
+
+<p>而之前提到的<code>after_find</code>是在任何find操作后会调用，<code>after_initialize</code>则会在一个Active Record的对象产生后调用。我的理解是，比如<code>Model.new()</code>这个只是产生了一个ActiveRecord对象，并没有save，所以调用<code>after_initialize</code>。</p>
+
+<p>怎么用呢？ 我们需要写一个handler和一个与它关联的相应的回调函数。</p>
+
+<p>比如：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Order &lt; ActiveRecord::Base
+</span><span class='line'>  before_validation :normalize_credit_card_number
+</span><span class='line'>  after_create do |order|
+</span><span class='line'>    logger.info "Order #{order.id} created"
+</span><span class='line'>  end
+</span><span class='line'>  protected
+</span><span class='line'>  def normalize_credit_card_number
+</span><span class='line'>    self.cc_number.gsub!(/[-\s]/, '')
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在<code>before_validation normalize_credit_card_number</code>中声明了一个handler并把它关联到<code>before_validation</code>这个事件中。然后再定义一个函数就行，这个函数最好是private或protected的。</p>
 </div>
 
 
@@ -133,15 +161,21 @@
   
 
 
-<time datetime="2012-09-03T00:39:00+08:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2012</time>
+<time datetime="2012-10-22T01:17:00+08:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails-/'>rails,</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Tony612.github.com/blog/2012/09/03/hello/" data-via="tony612_han" data-counturl="http://Tony612.github.com/blog/2012/09/03/hello/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/" data-via="tony612_han" data-counturl="http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -152,8 +186,10 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2012/10/17/activerecord-orm-of-rails/" title="Previous Post: ActiveRecord--ORM of Rails(1)">&laquo; ActiveRecord--ORM of Rails(1)</a>
       
-        <a class="basic-alignment right" href="/blog/2012/09/17/js-goodpart-object/" title="Next Post: JS GoodPart: Object">JS GoodPart: Object &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2012/10/29/use-include-for-querying-to-increase-the-efficiency/" title="Next Post: Use include for querying to optimize">Use include for querying to optimize &raquo;</a>
       
     </p>
   </footer>
@@ -280,8 +316,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://Tony612.github.com/blog/2012/09/03/hello/';
-        var disqus_url = 'http://Tony612.github.com/blog/2012/09/03/hello/';
+        var disqus_identifier = 'http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/';
+        var disqus_url = 'http://Tony612.github.com/blog/2012/10/22/activerecord--orm_of_rails/';
         var disqus_script = 'embed.js';
       
     (function () {

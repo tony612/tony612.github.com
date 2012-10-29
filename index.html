@@ -9,7 +9,7 @@
   <meta name="author" content="Tony">
 
   
-  <meta name="description" content="最近在看ihower的实战圣经，白天不能上网的话就看《Agile Web Development with rails》的后半部分，又看了railscasts开始几集，正好都讲到了ActiveRecord,也就是rails里MVC的model部分，就索性做个总结。 ORM &hellip;">
+  <meta name="description" content="今天写项目，然后参考ruby-china的一部分代码的时候，看到一个include的用法，不知道是怎么回事，因为它是用mongodb的，所以也一时找不到ActiveRecord中的用法。 不过刚刚在看railscasts的时候，突然就看到了这种用法: 比如说Task和Project是多对一的关系 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,119 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/29/use-include-for-querying-to-increase-the-efficiency/">Use Include for Querying to Optimize</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-29T23:06:00+08:00" pubdate data-updated="true">Oct 29<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/29/use-include-for-querying-to-increase-the-efficiency/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天写项目，然后参考ruby-china的一部分代码的时候，看到一个<code>include</code>的用法，不知道是怎么回事，因为它是用mongodb的，所以也一时找不到<code>ActiveRecord</code>中的用法。</p>
+
+<p>不过刚刚在看railscasts的时候，突然就看到了这种用法:</p>
+
+<p>比如说<code>Task</code>和<code>Project</code>是多对一的关系</p>
+
+<p>在index的页面需要用到<code>Task</code>和它<code>belongs_to</code>的那个<code>Project</code>，这样的话，看log里，会发现，查找了<code>Project</code>了很多次。</p>
+
+<p>那么就能用<code>@tasks = Task.find(:all, :include =&gt; :project)</code>来查到和project关联的task，这样的话可以把相关联的对象也先读取出来。</p>
+
+<p>那么有什么结果呢？</p>
+
+<p>在console的log里就看得很清楚了，载入页面之后，两次查询就够了。</p>
+
+<p>我自己去写的时候，<code>find</code>方法不起作用，不知道是因为这是以前的写法还是怎样。
+就看到实战圣经上有说这个的，原来是<code>includes</code>方法，比如：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@events = Event.includes(:user).order('start_date DESC').page(params[:page])</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就能查询到最近的<code>event</code>,并把对应的<code>user</code>包含进去，再进行分页了。顿时感觉世界好美好的有木有！！ 哈哈~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/22/activerecord--orm_of_rails/">ActiveRecord-ORM of Rails(2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-22T01:17:00+08:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/22/activerecord--orm_of_rails/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这两天重装系统，没做什么事情，装系统现在已经很快了，只是还在做好多的后续工作，回头再写篇总结好了。先写之前剩下的一篇。这次是聊点ActiveRecord的callback。</p>
+
+<h2>Monitor</h2>
+
+<p>ActiveRecord控制model的生命周期，包括他们的CRUD（《Agile..》上很风趣地说是watches sadly as they are destroyed. haha）。</p>
+
+<p>而在这过程中的许多时刻我们都可以通过callbacks来进行一些操作.</p>
+
+<p>ActiveRecord定义了十六个回调函数，十四个是<code>before/after_func</code>的形式，分别在一些函数之前或之后被调用，如<code>destory, validation</code>,两个特别的是after_find以及after_initialize，这两个没有对应的before。</p>
+
+<p>他们的流程如下：
+<img src="/images/callbackactiverecord.png"></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/10/22/activerecord--orm_of_rails/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -484,6 +597,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/29/use-include-for-querying-to-increase-the-efficiency/">Use include for querying to optimize</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/22/activerecord--orm_of_rails/">ActiveRecord-ORM of Rails(2)</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/10/17/activerecord-orm-of-rails/">ActiveRecord&#8211;ORM of Rails(1)</a>
       </li>
     
@@ -493,14 +614,6 @@
     
       <li class="post">
         <a href="/blog/2012/09/22/change-many-string-objects-to-integer-type-in-a-awesome-way/">Using map method in a incredibly elegant way</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/21/installing-the-archlinux-os/">Installing the archlinux OS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/js-goodpart-object/">JS GoodPart: Object</a>
       </li>
     
   </ul>
